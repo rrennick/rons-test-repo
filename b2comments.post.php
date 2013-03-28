@@ -92,47 +92,46 @@ if ($ok) {
 	$query = "INSERT INTO $tablecomments VALUES ('0','$comment_post_ID','$author','$email','$url','$user_ip','$now','$comment','0')";
 	$result = mysql_query($query);
 	if (!$result)
-		die ("There is an error with the database, it can&#8217;t store your comment...<br />Contact the <a href=\"mailto:$admin_email\">webmaster</a>.");
+		die ("There is an error with the database, it can't store your comment...<br>Contact the <a href=\"mailto:$admin_email\">webmaster</a>");
 
 	if ($comments_notify) {
 
-		$notify_message  = "New comment on your post #$comment_post_ID ".stripslashes($postdata['Title'])."\r\n\r\n";
-		$notify_message .= "Author : $comment_author (IP: $user_ip , $user_domain)\r\n";
-		$notify_message .= "E-mail : $comment_author_email\r\n";
-		$notify_message .= "URL    : $comment_author_url\r\n";
-		$notify_message .= "Whois  : http://ws.arin.net/cgi-bin/whois.pl?queryinput=$user_ip\r\n";
-		$notify_message .= "Comment: \n".stripslashes($original_comment)."\r\n\r\n";
-		$notify_message .= "You can see all comments on this post here: \r\n";
-		$notify_message .= comments_link('', false);
+		$notify_message  = "New comment on your post #$comment_post_ID.\r\n\r\n";
+		$notify_message .= "author : $comment_author (IP: $user_ip , $user_domain)\r\n";
+		$notify_message .= "e-mail : $comment_author_email\r\n";
+		$notify_message .= "url    : $comment_author_url\r\n";
+		$notify_message .= "comment: \n".stripslashes($original_comment)."\r\n\r\n";
+		$notify_message .= "You can see all comments on this post there: \r\n";
+		$notify_message .= $siteurl.'/'.$blogfilename.$querystring_start.'p'.$querystring_equal.$comment_post_ID.$querystring_separator.'c'.$querystring_equal.'1'."\r\n\r\n";
  
 		$postdata = get_postdata($comment_post_ID);
-		$authordata = get_userdata($postdata['Author_ID']);
-		$recipient = $authordata['user_email'];
-		$subject = "[$blogname] Comment: \"".stripslashes($postdata['Title']).'"';
+		$authordata = get_userdata($postdata["Author_ID"]);
+		$recipient = $authordata["user_email"];
+		$subject = "comment on post #$comment_post_ID \"".$postdata["Title"]."\"";
 
-		@mail($recipient, $subject, $notify_message, "From: \"$comment_author\" <$comment_author_email>\r\n"."X-Mailer: wordpress $b2_version with PHP/".phpversion());
+		@mail($recipient, $subject, $notify_message, "From: b2@".$HTTP_SERVER_VARS['SERVER_NAME']."\r\n"."X-Mailer: b2 $b2_version - PHP/" . phpversion());
 		
 	}
 
-	if ($email == '') {
-		$email = ' '; // this to make sure a cookie is set for 'no email'
+	if ($email == "") {
+		$email = " "; // this to make sure a cookie is set for 'no email'
 	}
-	if ($url == '') {
-		$url = ' '; // this to make sure a cookie is set for 'no url'
+	if ($url == "") {
+		$url = " "; // this to make sure a cookie is set for 'no url'
 	}
-	setcookie("comment_author", $author, time()+30000000);
-	setcookie("comment_author_email", $email, time()+30000000);
-	setcookie("comment_author_url", $url, time()+30000000);
+	setcookie("comment_author",$author, time()+30000000);
+	setcookie("comment_author_email",$email, time()+30000000);
+	setcookie("comment_author_url",$url, time()+30000000);
 
-	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-	header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . ' GMT');
-	header('Cache-Control: no-cache, must-revalidate');
-	header('Pragma: no-cache');
+	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+	header("Cache-Control: no-cache, must-revalidate");
+	header("Pragma: no-cache");
 	$location = (!empty($HTTP_POST_VARS['redirect_to'])) ? $HTTP_POST_VARS['redirect_to'] : $HTTP_SERVER_VARS["HTTP_REFERER"];
 	header("Location: $location");
 
 } else {
-	die('Sorry, you can only post a new comment once every 30 seconds.');
+	die("Sorry, you can only post a new comment every 30 seconds");
 }
 
 ?>
