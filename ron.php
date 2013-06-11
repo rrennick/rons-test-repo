@@ -1,7 +1,10 @@
 <?php
 //test file for git testing
 // with small changes
+$now = time();
+
 echo 'Hello World!';
+
 
 /*
 O:8:"stdClass":11:{
