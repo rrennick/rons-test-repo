@@ -3,6 +3,7 @@
 // with small changes
 echo 'Hello World!';
 
+echo time();
 /*
 O:8:"stdClass":11:{
 	s:3:"ref";s:17:"refs/heads/master";
