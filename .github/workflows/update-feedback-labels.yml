@@ -1,13 +1,11 @@
-name: 'Update feedback labels on comment'
+name: 'Update contributor feedback labels on comment'
 on: 'issue_comment'
 
 jobs:
   feedback:
-    if: github.event.issue && github.event.issue.labels && contains(github.event.issue.labels.*.name, 'needs feedback')
+    if: github.event.issue && contains(github.event.issue.labels.*.name, 'needs feedback')
     runs-on: ubuntu-latest
     steps:
-    - name: Echo github obj
-      run: echo "${{ toJson(github.event.issue.labels) }}"
     - name: Add has feedback
       uses: actions-ecosystem/action-add-labels@v1
       with:
