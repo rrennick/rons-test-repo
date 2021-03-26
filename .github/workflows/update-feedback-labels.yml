@@ -3,8 +3,16 @@ on: 'issue_comment'
 
 jobs:
   feedback:
+    if: github.event.issue && github.event.issue.labels && contains(github.event.issue.labels.*.name, 'needs feedback')
     runs-on: ubuntu-latest
     steps:
     - name: Echo github obj
-      if: github.event.issue && github.event.issue.labels
       run: echo "${{ toJson(github.event.issue.labels) }}"
+    - name: Add has feedback
+      uses: actions-ecosystem/action-add-labels@v1
+      with:
+        labels: 'has feedback'
+    - name: remove needs feedback
+      uses: actions-ecosystem/action-remove-labels@v1
+      with:
+        labels: 'needs feedback'
