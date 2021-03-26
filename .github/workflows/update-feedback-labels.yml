@@ -6,4 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Echo github obj
-      run: echo ${{ toJson(github) }}
+      if: github.event.issue && github.event.issue.labels
+      run: echo "${{ toJson(github.event.issue.labels) }}"
