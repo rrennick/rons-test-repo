@@ -1,0 +1,14 @@
+on:
+  workflow_dispatch:
+    inputs:
+      pagename:
+        description: 'page slug'
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Run curl test
+        env:
+          SMOKE_TEST_URL: ${{ secrets.SMOKE_TEST_URL }}
+        run: curl  ${SMOKE_TEST_URL}/?pagename=${{ github.event.inputs.pagename }}
