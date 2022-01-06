@@ -1,0 +1,42 @@
+name: Run smoke tests against pull request.
+on:
+  pull_request:
+    branches:
+      - trunk
+    types:
+      - labeled
+jobs:
+  prcheck:
+    name: Smoke test a pull request.
+    if: "${{ contains(github.event.label.name, 'run: smoke tests') }}"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Create dirs.
+        run: |
+          mkdir -p package/woocommerce
+
+      - name: Checkout code.
+        uses: actions/checkout@v2
+        with:
+          path: package/woocommerce
+
+      - name: Post Smoke tests results comment on PR
+        if: always()
+        uses: actions/github-script@v5
+        env:
+          TITLE: 'Smoke Test Results'
+          SMOKE_TEST_URL: https://example.org
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const script = require( './package/woocommerce/smoke-test-comment.js' )
+            await script({github, context})
+
+      - name: Remove label from pull request.
+        if: |
+          github.event.pull_request &&
+          contains( github.event.pull_request.labels.*.name, format('run{0} smoke tests', ':'))
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: 'run: smoke tests'
